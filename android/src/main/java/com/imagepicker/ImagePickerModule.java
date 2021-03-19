@@ -141,6 +141,10 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
     }
 
     void onImageObtained(Uri uri) {
+        if (uri == null) {
+            callback.invoke(getErrorMap(errOthers, "Uri error"));
+            return;
+        }
         Uri newUri = resizeImage(uri, reactContext, options);
         callback.invoke(getResponseMap(newUri, options, reactContext));
     }

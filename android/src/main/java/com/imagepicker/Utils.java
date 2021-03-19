@@ -190,6 +190,9 @@ public class Utils {
             InputStream imageStream = context.getContentResolver().openInputStream(uri);
             String mimeType =  getMimeTypeFromFileUri(uri);
             Bitmap b = BitmapFactory.decodeStream(imageStream);
+            if (b == null) {
+                return null;
+            }
             b = Bitmap.createScaledBitmap(b, newDimens[0], newDimens[1], true);
             String originalOrientation = getOrientation(uri, context);
 
@@ -327,6 +330,12 @@ public class Utils {
     }
 
     static ReadableMap getResponseMap(Uri uri, Options options, Context context) {
+        if (uri == null) {
+            WritableMap map = Arguments.createMap();
+            // mediaType = 'photo' but you select a vidoe then uri will be null.
+            map.putString("typeError", "not image");
+            return map;
+        }
         String fileName = uri.getLastPathSegment();
         int[] dimensions = getImageDimensions(uri, context);
 
